@@ -10,6 +10,7 @@ import com.movisens.xs.api.exceptions.MovisensXSException;
 import com.movisens.xs.api.models.*;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Test;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,6 +26,7 @@ import java.util.zip.ZipFile;
 
 import static com.jayway.awaitility.Awaitility.await;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 /*
@@ -219,27 +221,36 @@ public class ApiTest {
         monitoringRequest.add(monitoringCompliance3);
         monitoringRequest.add(monitoringAlert1);
 
-        Response response = service.sendMonitoring(STUDY_ID, monitoringRequest).execute();
-        assertEquals(201, response.code());
+        Response<MonitoringRequest> monitoringResponseCall = service.sendMonitoring(STUDY_ID, monitoringRequest).execute();
+
+        MonitoringRequest monitoringResponse = monitoringResponseCall.body();
+
+        assertEquals(201, monitoringResponseCall.code());
+        assertThat(monitoringResponse.getData(), not(IsEmptyCollection.empty()));
     }
 
     @Test
     public void testGetMonitoring() throws AuthorizationException, IOException, MovisensXSException {
-        Response response = service.getMonitoring(STUDY_ID).execute();
-        ApiResponse body = (ApiResponse) response.body();
-        assertEquals(200, response.code());
-        assertNotNull("testGetMonitoring not be null", body.data);
-    }
+        Response<MonitoringResponse> monitoringResponseCall = service.getMonitoring(STUDY_ID).execute();
 
+        MonitoringResponse monitoringResponse = monitoringResponseCall.body();
+
+        assertEquals(200, monitoringResponseCall.code());
+        assertNotNull("testGetMonitoring not to be null", monitoringResponse);
+        assertThat(monitoringResponse.probands, not(IsEmptyCollection.empty()));
+    }
 
     @Test
     public void testGetgetMonitoringPerProband() throws AuthorizationException, IOException, MovisensXSException {
         String DATE = "2019-08-13";
 
-        Response response = service.getMonitoringPerProband(STUDY_ID, PARTICIPANT_ID, DATE).execute();
-        ApiResponse body = (ApiResponse) response.body();
-        assertEquals(200, response.code());
-        assertNotNull("testGetgetMonitoringPerProband not be null", body.data);
+        Response<MonitoringPerProbandResponse> monitoringResponseCall =
+                service.getMonitoringPerProband(STUDY_ID, PARTICIPANT_ID, DATE).execute();
+
+        MonitoringPerProbandResponse monitoringRequest = monitoringResponseCall.body();
+
+        assertEquals(200, monitoringResponseCall.code());
+        assertThat(monitoringRequest.getMonitorings(), not(IsEmptyCollection.empty()));
     }
 
     private static boolean zipIsValid(final File file) {

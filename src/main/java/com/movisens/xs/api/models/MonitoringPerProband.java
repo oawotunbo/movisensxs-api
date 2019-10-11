@@ -2,7 +2,10 @@ package com.movisens.xs.api.models;
 
 import com.google.gson.annotations.Expose;
 
-public class Monitoring {
+import java.util.List;
+
+public class MonitoringPerProband {
+
 
     public enum MonitoringType {
         COMPLIANCE, ALERT
@@ -15,7 +18,7 @@ public class Monitoring {
     private String date;
 
     @Expose
-    private MonitoringType type;
+    private String type;
 
     @Expose
     private String name;
@@ -27,18 +30,13 @@ public class Monitoring {
     private boolean includeInMail = false;
 
     @Expose
-    public MonitoringDTO compliance;
+    private boolean isWarning = false;
 
+    @Expose
+    private String category;
 
-    public Monitoring(long probandId, String date, MonitoringType type, String name, String message,
-                      boolean includeInMail) {
-        this.probandId = probandId;
-        this.date = date;
-        this.type = type;
-        this.name = name;
-        this.message = message;
-        this.includeInMail = includeInMail;
-    }
+    @Expose
+    private Integer value;
 
     public long getProbandId() {
         return probandId;
@@ -56,11 +54,11 @@ public class Monitoring {
         this.date = date;
     }
 
-    public MonitoringType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(MonitoringType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -88,24 +86,42 @@ public class Monitoring {
         this.includeInMail = includeInMail;
     }
 
-    public MonitoringDTO getCompliance() {
-        return compliance;
+    public boolean isWarning() {
+        return isWarning;
     }
 
-    public void setCompliance(MonitoringDTO compliance) {
-        this.compliance = compliance;
+    public void setWarning(boolean warning) {
+        isWarning = warning;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return "Monitoring{" +
+        return "MonitoringPerProband{" +
                 "probandId=" + probandId +
                 ", date='" + date + '\'' +
-                ", type=" + type +
+                ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
                 ", message='" + message + '\'' +
                 ", includeInMail=" + includeInMail +
-                ", compliance=" + compliance +
+                ", isWarning=" + isWarning +
+                ", category='" + category + '\'' +
+                ", value=" + value +
                 '}';
     }
 }
