@@ -213,7 +213,8 @@ public class ApiTest {
 
         MonitoringAlert monitoringAlert1 = new MonitoringAlert(2, "2019-08-13",
                 "Stress episode",
-                "<h2>There has been a stress episode detected</h2>", true);
+                "<h2>There has been a stress episode detected</h2>", true,
+                true);
 
         MonitoringRequest monitoringRequest = new MonitoringRequest();
         monitoringRequest.add(monitoringCompliance1);
